@@ -46,6 +46,8 @@ def handleEvent(state, event):
     return(state[0], -1)
 
 # Off we go! Start the cat at the left edge, and try for 30 FPS
+# x coord
+initstate = 0
 frameRate = 60
 initState = (0,1)
 # debug()
