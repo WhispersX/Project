@@ -19,34 +19,35 @@ initState = 0
 # Display the state by drawing a cat at that x coordinate
 myimage = dw.loadImage("cat.bmp")
 
-
+#state -> image (IO)
 def updateDisplay(state):
     dw.fill(dw.black)
     dw.draw(myimage, (state, width/2))
 
 
 # We'll update the state on each tick by incrementing the x stateinate
+# state -> state
 def updateState(state):
-    return(state+1)
+    return((state[0]+state[1],state[1]))
 
 # We'll terminate when the x stateinate reaches the screen edge
 
-
+#state -> bool
 def endState(state):
-    if (state >= width):
+    if (state[0]>= width):
         return True
     else:
         return False
 
 
 # For now we'll handle events just logging them to the console
-#
+#state -> event -> state
 def handleEvent(state, event):
-    return(state)
+    return(state[0], -1)
 
 # Off we go! Start the cat at the left edge, and try for 30 FPS
 frameRate = 60
-initState = 0
+initState = (0,1)
 # debug()
 rw.runWorld(initState, updateDisplay, updateState, handleEvent,
             endState, frameRate)
