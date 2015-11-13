@@ -1,6 +1,7 @@
 import runWorld as rw
 import drawWorld as dw
 import pygame as pg
+from random import randint
 
 ################################################################
 
@@ -15,7 +16,7 @@ import pygame as pg
 #
 # For example, the tuple (7,1) would represent the cat at x-coord,
 # 7, and moving to the right by 1 pixel per "clock tick."
-# 
+#
 # The initial state of the cat in this program is (0,1), meaning that the cat
 # starts at the left of the screen and moves right one pixel per tick.
 #
@@ -46,7 +47,7 @@ myimage = dw.loadImage("cat.bmp")
 #
 def updateDisplay(state):
     dw.fill(dw.black)
-    dw.draw(myimage, (state[0], height/2))
+    dw.draw(myimage, (state[0],state[2])) #x,y coordinate
 
 
 ################################################################
@@ -58,7 +59,7 @@ def updateDisplay(state):
 #
 # state -> state
 def updateState(state):
-    return((state[0]+state[1],state[1]))
+    return((state[0]+state[1],state[1], state[2]+state[3],state[3]))
 
 ################################################################
 
@@ -66,7 +67,7 @@ def updateState(state):
 # that is, when pos is less then zero or greater than the screen width
 # state -> bool
 def endState(state):
-    if (state[0] > width or state[0] < 0):
+    if (state[0] > width or state[0] < 0 or state [2] > height or state[2] < 0):
         return True
     else:
         return False
@@ -85,23 +86,30 @@ def endState(state):
 #
 # state -> event -> state
 #
-def handleEvent(state, event):  
-#    print("Handling event: " + str(event))
+def handleEvent(state, event):
+    print("Handling event: " + str(event))
     if (event.type == pg.MOUSEBUTTONDOWN):
-        if (state[1]) == 1:
-            newState = -1
+        if state[1] > 0:
+            newState1 = 0-randint(1,3)
         else:
-            newState = 1   
-        return((state[0],newState))
+            newState1 = randint(1,3)
+        if state[3] > 0:
+            newState3 = 0-randint(1,3)
+        else:
+            newState3 = randint(1,3)
+        print(newState1,newState3)
+        print('success')
+        return((state[0],newState1,state[2],newState3))
     else:
+        print('unsuccess')
         return(state)
 
 ################################################################
 
 # World state will be single x coordinate at left edge of world
 
-# The cat starts at the left, moving right 
-initState = (0,1)
+# The cat starts at the left, moving right
+initState = (randint(100,399),randint(1,3),randint(100,399),randint(1,1)) #initial status, x-cord, x-v, y-cord, y-v
 
 # Run the simulation no faster than 60 frames per second
 frameRate = 60
