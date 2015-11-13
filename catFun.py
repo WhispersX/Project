@@ -97,11 +97,11 @@ def handleEvent(state, event):
             newState3 = 0-randint(1,3)
         else:
             newState3 = randint(1,3)
-        print(newState1,newState3)
-        print('success')
+        #print(newState1,newState3)
+        #print('success')
         return((state[0],newState1,state[2],newState3))
     else:
-        print('unsuccess')
+        #print('unsuccess')
         return(state)
 
 ################################################################
@@ -109,7 +109,7 @@ def handleEvent(state, event):
 # World state will be single x coordinate at left edge of world
 
 # The cat starts at the left, moving right
-initState = (randint(100,399),randint(1,3),randint(100,399),randint(1,1)) #initial status, x-cord, x-v, y-cord, y-v
+initState = (randint(100,399),randint(1,3),randint(100,399),randint(1,3)) #initial status, x-cord, x-v, y-cord, y-v
 
 # Run the simulation no faster than 60 frames per second
 frameRate = 60
