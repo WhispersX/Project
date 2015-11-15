@@ -3,6 +3,22 @@ import drawWorld as dw
 import pygame as pg
 from random import randint
 
+################################################################
+
+# This program is an interactive simulation/game. A cat starts
+# to move across the screen. The direction of movement is reversed
+# on each "mouse down" event. Based on the original CatFun game, we
+# add one fish and four points on the screen.
+#
+# When the cat catches the fish that shows randomly at a fixed
+# point at each new game, it wins.
+#
+# Every time the cat reaches one of the point, it would accelerate and
+# require faster reaction on using mouse.
+#
+# when the cat reaches the lower and upper bounds, it will bounce
+# back. When the cat touches the left and right sides, it will die and
+# the game is over.
 
 name = "Cat Fun. Press the mouse (but not too fast)!"
 width = 500
