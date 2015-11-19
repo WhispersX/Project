@@ -10,7 +10,6 @@ height = 500
 rw.newDisplay(width, height, name)
 
 myimage = dw.loadImage("cat.bmp")
-
 def updateDisplay(state):
     dw.fill(dw.black)
     dw.draw(myimage, (state[0],state[2])) #x,y coordinate
