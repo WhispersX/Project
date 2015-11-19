@@ -34,6 +34,7 @@ from random import randint
 name = "Cat Fun. Press the mouse (but not too fast)!"
 width = 500
 height = 500
+fig = 20
 rw.newDisplay(width, height, name)
 
 ################################################################
@@ -45,9 +46,14 @@ myimage = dw.loadImage("cat.bmp")
 # draw the cat halfway up the screen (height/2) and at the x
 # coordinate given by the first component of the state tuple
 #
-def updateDisplay(state):
+def updateDisplay(state,fishState):
     dw.fill(dw.black)
     dw.draw(myimage, (state[0],state[2])) #x,y coordinate
+    dw.draw(myimage, (50,350)) #x,y coordinate
+    dw.draw(myimage, (350,350)) #x,y coordinate
+    dw.draw(myimage, (50,50)) #x,y coordinate
+    dw.draw(myimage, (350,50)) #x,y coordinate
+    dw.draw(myimage, fishState) #x,y coordinate
 
 
 ################################################################
@@ -59,7 +65,20 @@ def updateDisplay(state):
 #
 # state -> state
 def updateState(state):
-    return((state[0]+state[1],state[1], state[2]+state[3],state[3]))
+    #if(state[0]+state[1]>width-fig and state[1]>0):  #condition1
+        #state1=0-randint(1,3)     #if condtition1  satisfied
+    #elif(state[0]+state[1]<fig and state[1]<0):    #condition2
+        #state1=randint(1,3)      #condition1 is not satisfied, then see if condtion2 satisfied
+    #else:
+        #state1=state[1]          #neither condition1 nor condition2 satisfied
+    if(state[2]+state[3]>height-fig//2 and state[3]>0):
+        state3=0-randint(1,3)
+    elif(state[2]+state[3]<fig//2 and state[3]<0):
+        state3=randint(1,3)
+    else:
+        state3=state[3]
+
+    return((state[0]+state[1],state[1], state[2]+state3,state3))
 
 ################################################################
 
@@ -110,10 +129,10 @@ def handleEvent(state, event):
 
 # The cat starts at the left, moving right
 initState = (randint(100,399),randint(1,3),randint(100,399),randint(1,3)) #initial status, x-cord, x-v, y-cord, y-v
-
+fishState = (randint(100,300),randint(100,300))
 # Run the simulation no faster than 60 frames per second
 frameRate = 60
 
 # Run the simulation!
-rw.runWorld(initState, updateDisplay, updateState, handleEvent,
+rw.runWorld(initState,fishState, updateDisplay, updateState, handleEvent,
             endState, frameRate)

@@ -20,7 +20,7 @@ def newDisplay(win_width, win_height, win_caption):
     clock = pg.time.Clock()
 
 
-def runWorld(initState, updateDisplay, updateState, handleEvent,
+def runWorld(initState, fishState, updateDisplay, updateState, handleEvent,
              endState, frameRate):
     '''Purpose: coinductively run world: exit if in end state
     otherwise set current state to init state, and then
@@ -32,7 +32,7 @@ def runWorld(initState, updateDisplay, updateState, handleEvent,
     done = False
     currentState = initState
     while not done:
-        updateDisplay(currentState)
+        updateDisplay(currentState,fishState)
         pg.display.update()
         clock.tick(frameRate)
         currentState = updateState(currentState)
@@ -44,4 +44,3 @@ def runWorld(initState, updateDisplay, updateState, handleEvent,
             else:
                 currentState = handleEvent(currentState, event)
     pg.quit()
-
