@@ -1,6 +1,7 @@
 import runWorld as rw
 import drawWorld as dw
 import pygame as pg
+from pygame.locals import *
 from random import randint
 
 ################################################################
@@ -35,25 +36,36 @@ name = "Cat Fun. Press the mouse (but not too fast)!"
 width = 500
 height = 500
 fig = 20
+tiffany = (66,199,249)
 rw.newDisplay(width, height, name)
 
 ################################################################
 
 # Display the state by drawing a cat at that x coordinate
 myimage = dw.loadImage("cat.bmp")
+myfish= dw.loadImage("Fish.bmp")
+myacpnt = dw.loadImage("circle.bmp")
+#mytext = "When the cat catches the fish that shows randomly at a fixed point at each new game, it wins. \n Every time the cat reaches one of the point, it would accelerate and require faster reaction on using mouse. when the cat reaches the lower and upper bounds, it will bounce back. When the cat touches the left and right sides, it will die and the game is over."
+#mylabel = dw.makeLabel(mytext,"serif",24,dw.white)
+firstdisp = True
+
 
 # state -> image (IO)
 # draw the cat halfway up the screen (height/2) and at the x
 # coordinate given by the first component of the state tuple
 #
-def updateDisplay(state,fishState):
-    dw.fill(dw.black)
+def updateDisplay(state):
+    global firstdisp
+    dw.fill(tiffany)
+    if(firstdisp):
+#        dw.draw(mylabel,(50,50))
+        firstdisp=False
     dw.draw(myimage, (state[0],state[2])) #x,y coordinate
-    dw.draw(myimage, (50,350)) #x,y coordinate
-    dw.draw(myimage, (350,350)) #x,y coordinate
-    dw.draw(myimage, (50,50)) #x,y coordinate
-    dw.draw(myimage, (350,50)) #x,y coordinate
-    dw.draw(myimage, fishState) #x,y coordinate
+    dw.draw(myacpnt, (acpntsState[0],acpntsState[2])) #x,y coordinate
+    dw.draw(myacpnt, (acpntsState[0],acpntsState[3])) #x,y coordinate
+    dw.draw(myacpnt, (acpntsState[1],acpntsState[2])) #x,y coordinate
+    dw.draw(myacpnt, (acpntsState[1],acpntsState[3])) #x,y coordinate
+    dw.draw(myfish, fishState) #x,y coordinate
 
 
 ################################################################
@@ -65,20 +77,37 @@ def updateDisplay(state,fishState):
 #
 # state -> state
 def updateState(state):
-    #if(state[0]+state[1]>width-fig and state[1]>0):  #condition1
-        #state1=0-randint(1,3)     #if condtition1  satisfied
-    #elif(state[0]+state[1]<fig and state[1]<0):    #condition2
-        #state1=randint(1,3)      #condition1 is not satisfied, then see if condtion2 satisfied
-    #else:
-        #state1=state[1]          #neither condition1 nor condition2 satisfied
+    global acstate
+#    if(state[0]+state[1]>width-fig and state[1]>0):  #condition1
+#        state1=0-state[1]     #if condtition1  satisfied
+#    elif(state[0]+state[1]<fig and state[1]<0):    #condition2
+#        state1=0-state[1]      #condition1 is not satisfied, then see if condtion2 satisfied
+#    else:
+    state1=state[1]          #neither condition1 nor condition2 satisfied
     if(state[2]+state[3]>height-fig//2 and state[3]>0):
-        state3=0-randint(1,3)
+        state3=0-state[3]
     elif(state[2]+state[3]<fig//2 and state[3]<0):
-        state3=randint(1,3)
+        state3=0-state[3]
     else:
         state3=state[3]
-
-    return((state[0]+state[1],state[1], state[2]+state3,state3))
+## Double state[1,3] when cat touches the four accelerating points.
+    if( ((state[0]<acpntsState[0]+fig//2) and (state[0]>acpntsState[0]-fig//2)) or ((state[0]<acpntsState[1]+fig//2) and (state[0]>acpntsState[1]-fig//2)) ):
+        if( ((state[2]<acpntsState[2]+fig//2) and (state[2]>acpntsState[2]-fig//2)) or ((state[2]<acpntsState[3]+fig//2) and (state[2]>acpntsState[3]-fig//2)) ):
+            if(acstate==False): #Double speed only once in each accelerating point
+                if(state1<maxstate):
+                    state1=2*state1
+                else:
+                    state1=maxstate
+                if(state3<maxstate):
+                    state3=2*state1
+                else:
+                    state3=maxstate
+                acstate=True
+        else:
+            acstate=False # Set acstate to False when gets out of acclerating point
+    else:
+        acstate=False# Set acstate to False when gets out of acclerating point
+    return((state[0]+state1,state1, state[2]+state3,state3))
 
 ################################################################
 
@@ -87,6 +116,9 @@ def updateState(state):
 # state -> bool
 def endState(state):
     if (state[0] > width or state[0] < 0 or state [2] > height or state[2] < 0):
+        return True
+    #Endstate happens when cat catches the fish
+    elif((state[0]<fishState[0]+fig*2) and (state[0]>fishState[0]-fig*2) and (state[2]<fishState[1]+fig*2) and (state[2]>fishState[1]-fig*2) ):
         return True
     else:
         return False
@@ -130,9 +162,12 @@ def handleEvent(state, event):
 # The cat starts at the left, moving right
 initState = (randint(100,399),randint(1,3),randint(100,399),randint(1,3)) #initial status, x-cord, x-v, y-cord, y-v
 fishState = (randint(100,300),randint(100,300))
+acpntsState = (50,350,50,350) #accerlerating points locations (x1,x1,y1,y2)
+acstate=False
+maxstate=10
 # Run the simulation no faster than 60 frames per second
 frameRate = 60
 
 # Run the simulation!
-rw.runWorld(initState,fishState, updateDisplay, updateState, handleEvent,
+rw.runWorld(initState, updateDisplay, updateState, handleEvent,
             endState, frameRate)
