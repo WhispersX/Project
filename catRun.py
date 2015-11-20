@@ -1,8 +1,3 @@
-import runWorld as rw
-import drawWorld as dw
-import pygame as pg
-from random import randint
-
 ################################################################
 
 # This program is an interactive simulation/game. A cat starts
