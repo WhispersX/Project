@@ -1,6 +1,7 @@
 import runWorld as rw
 import drawWorld as dw
 import pygame as pg
+import time
 from pygame.locals import *
 from random import randint
 
@@ -45,8 +46,17 @@ rw.newDisplay(width, height, name)
 myimage = dw.loadImage("cat.bmp")
 myfish= dw.loadImage("Fish.bmp")
 myacpnt = dw.loadImage("circle.bmp")
-#mytext = "When the cat catches the fish that shows randomly at a fixed point at each new game, it wins. \n Every time the cat reaches one of the point, it would accelerate and require faster reaction on using mouse. when the cat reaches the lower and upper bounds, it will bounce back. When the cat touches the left and right sides, it will die and the game is over."
-#mylabel = dw.makeLabel(mytext,"serif",24,dw.white)
+inst_line1 = "When the cat catches the fish, you win!"
+inst_line2 = "Every time the cat reaches one of the points, it would accelerate."
+inst_line3 = "When the cat reaches the lower and upper bounds, it will bounce back."
+inst_line4 = "When the cat touches the left and right sides, it will die and the game is over."
+inst_line5 = "Click the mouse and get start. Enjoy!"
+mylabel0 = dw.makeLabel("Instructions:","serif",24,dw.black)
+mylabel1 = dw.makeLabel(inst_line1,"serif",12,dw.black)
+mylabel2 = dw.makeLabel(inst_line2,"serif",12,dw.black)
+mylabel3 = dw.makeLabel(inst_line3,"serif",12,dw.black)
+mylabel4 = dw.makeLabel(inst_line4,"serif",12,dw.black)
+mylabel5 = dw.makeLabel(inst_line5,"serif",12,dw.black)
 firstdisp = True
 
 
@@ -58,14 +68,20 @@ def updateDisplay(state):
     global firstdisp
     dw.fill(tiffany)
     if(firstdisp):
-#        dw.draw(mylabel,(50,50))
-        firstdisp=False
-    dw.draw(myimage, (state[0],state[2])) #x,y coordinate
-    dw.draw(myacpnt, (acpntsState[0],acpntsState[2])) #x,y coordinate
-    dw.draw(myacpnt, (acpntsState[0],acpntsState[3])) #x,y coordinate
-    dw.draw(myacpnt, (acpntsState[1],acpntsState[2])) #x,y coordinate
-    dw.draw(myacpnt, (acpntsState[1],acpntsState[3])) #x,y coordinate
-    dw.draw(myfish, fishState) #x,y coordinate
+        dw.draw(mylabel0,(50,70))
+        dw.draw(mylabel1,(50,100))
+        dw.draw(mylabel2,(50,120))
+        dw.draw(mylabel3,(50,140))
+        dw.draw(mylabel4,(50,160))
+        dw.draw(mylabel5,(50,180))
+    #display fish, cat, and points after the first click
+    else:
+        dw.draw(myimage, (state[0],state[2])) #x,y coordinate
+        dw.draw(myacpnt, (acpntsState[0],acpntsState[2])) #x,y coordinate
+        dw.draw(myacpnt, (acpntsState[0],acpntsState[3])) #x,y coordinate
+        dw.draw(myacpnt, (acpntsState[1],acpntsState[2])) #x,y coordinate
+        dw.draw(myacpnt, (acpntsState[1],acpntsState[3])) #x,y coordinate
+        dw.draw(myfish, fishState) #x,y coordinate
 
 
 ################################################################
@@ -138,8 +154,10 @@ def endState(state):
 # state -> event -> state
 #
 def handleEvent(state, event):
-    print("Handling event: " + str(event))
+    #print("Handling event: " + str(event))
+    global firstdisp
     if (event.type == pg.MOUSEBUTTONDOWN):
+        firstdisp = False 
         if state[1] > 0:
             newState1 = 0-randint(1,3)
         else:
@@ -160,8 +178,9 @@ def handleEvent(state, event):
 # World state will be single x coordinate at left edge of world
 
 # The cat starts at the left, moving right
-initState = (randint(100,399),randint(1,3),randint(100,399),randint(1,3)) #initial status, x-cord, x-v, y-cord, y-v
-fishState = (randint(100,300),randint(100,300))
+# Set the inital speed to 0, so that cat starts to move only after the first click
+initState = (randint(100,399),0,randint(200,399),0) #initial status, x-cord, x-v, y-cord, y-v
+fishState = (randint(100,300),randint(50,150))
 acpntsState = (50,350,50,350) #accerlerating points locations (x1,x1,y1,y2)
 acstate=False
 maxstate=10
